@@ -1,4 +1,5 @@
-﻿using System;
+﻿using llcom.LuaEnv;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -43,6 +44,56 @@ namespace llcom.Pages
             //绑定
             MainGrid.DataContext = this;
             IpPortTextBox.DataContext = Tools.Global.setting;
+
+            //适配一下通用通道
+            LuaApis.SendChannelsRegister("udp-server", (data, t) =>
+            {
+                if (Server != null)
+                {
+                    if (data != null)
+                    {
+                        return Send(data, recvAddr);
+                    }
+                    else if (t != null)
+                    {
+                        return Send(t.Get<byte[]>("data"), t.Get<string>("from"));
+                    }
+                    else
+                        return false;
+                }
+                else
+                    return false;
+            });
+        }
+
+        private string recvAddr = null;
+        private bool Send(byte[] buff, string hostname)
+        {
+            try
+            {
+                if (hostname == null)
+                {
+                    ShowData($"❗ Send data error hostname is null");
+                    return false;
+                }
+                string[] parts = hostname.Split(':');
+                if ((parts.Length == 2) && (IPAddress.TryParse(parts[0], out IPAddress ipAddress)) && (int.TryParse(parts[1], out int port)))
+                {
+                    Server.Send(buff, buff.Length, new IPEndPoint(ipAddress, port));
+                    ShowData($" ← send ({(string)hostname})", buff, true);
+                    return true;
+                }
+                else
+                {
+                    ShowData($"❗ Send data error hostname not invalid");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowData($"❗ Send data error {ex.Message}");
+                return false;
+            }
         }
 
         /// <summary>
@@ -110,7 +161,13 @@ namespace llcom.Pages
 
                     byte[] receiveBytes = u.EndReceive(ar, ref e);
                     var isV6 = e.Address.ToString().Contains(":");
-                    ShowData($"{(isV6 ? "[" : "")}{e.Address}{(isV6 ? "]" : "")}:{e.Port}", receiveBytes);
+                    recvAddr = $"{(isV6 ? "[" : "")}{e.Address}{(isV6 ? "]" : "")}:{e.Port}";
+                    ShowData($" → receive ({recvAddr})", receiveBytes);
+                    LuaApis.SendChannelsReceived("udp-server", new
+                    {
+                        from = recvAddr,
+                        data = receiveBytes
+                    });
                     Server.BeginReceive(newConnectionCb, ar.AsyncState);
                 }
                 catch { }

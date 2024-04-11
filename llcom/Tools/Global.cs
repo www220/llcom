@@ -622,7 +622,7 @@ namespace llcom.Tools
                 }
             }
             //请求函数
-            var req = (string after) =>
+            Func<string, (List<(string,string)>,int,string,bool)> req = (string after) =>
             {
                 var client = new RestClient();
                 client.BaseUrl = new Uri("https://api.github.com/graphql");
