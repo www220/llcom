@@ -52,7 +52,7 @@ namespace llcom.Pages
                 {
                     if (data != null)
                     {
-                        return Send(data, recvAddr);
+                        return Send(data, null);
                     }
                     else if (t != null)
                     {
@@ -66,26 +66,25 @@ namespace llcom.Pages
             });
         }
 
-        private string recvAddr = null;
-        private bool Send(byte[] buff, string hostname)
+        private bool Send(byte[] buff, string from)
         {
             try
             {
-                if (hostname == null)
+                if (from == null)
                 {
-                    ShowData($"❗ Send data error hostname is null");
+                    ShowData($"❗ Send data error from is null");
                     return false;
                 }
-                string[] parts = hostname.Split(':');
+                string[] parts = from.Split(':');
                 if ((parts.Length == 2) && (IPAddress.TryParse(parts[0], out IPAddress ipAddress)) && (int.TryParse(parts[1], out int port)))
                 {
                     Server.Send(buff, buff.Length, new IPEndPoint(ipAddress, port));
-                    ShowData($" ← send ({(string)hostname})", buff, true);
+                    ShowData($" ← send ({(string)from})", buff, true);
                     return true;
                 }
                 else
                 {
-                    ShowData($"❗ Send data error hostname not invalid");
+                    ShowData($"❗ Send data error from not invalid");
                     return false;
                 }
             }
@@ -161,11 +160,11 @@ namespace llcom.Pages
 
                     byte[] receiveBytes = u.EndReceive(ar, ref e);
                     var isV6 = e.Address.ToString().Contains(":");
-                    recvAddr = $"{(isV6 ? "[" : "")}{e.Address}{(isV6 ? "]" : "")}:{e.Port}";
-                    ShowData($" → receive ({recvAddr})", receiveBytes);
+                    var name = $"{(isV6 ? "[" : "")}{e.Address}{(isV6 ? "]" : "")}:{e.Port}";
+                    ShowData($" → receive ({name})", receiveBytes);
                     LuaApis.SendChannelsReceived("udp-server", new
                     {
-                        from = recvAddr,
+                        from = (string)name,
                         data = receiveBytes
                     });
                     Server.BeginReceive(newConnectionCb, ar.AsyncState);

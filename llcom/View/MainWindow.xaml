@@ -16,7 +16,7 @@
     Activated="Window_Activated"
     Deactivated="Window_Deactivated"
     Loaded="Window_Loaded"
-    mc:Ignorable="d">
+    mc:Ignorable="d" WindowState="Maximized">
     <Window.Style>
         <Style BasedOn="{StaticResource {x:Type Window}}" TargetType="Window" />
     </Window.Style>
@@ -579,7 +579,7 @@
                             VerticalContentAlignment="Top"
                             IsReadOnly="true"
                             MouseLeave="luaLogTextBox_MouseLeave"
-                            TextWrapping="Wrap"
+                            TextWrapping="NoWrap"
                             VerticalScrollBarVisibility="Auto" />
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>

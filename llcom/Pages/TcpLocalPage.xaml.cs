@@ -56,11 +56,20 @@ namespace llcom.Pages
             };
 
             //适配一下通用通道
-            LuaApis.SendChannelsRegister("tcp-server", (data, _) =>
+            LuaApis.SendChannelsRegister("tcp-server", (data, t) =>
             {
-                if (Server != null && data != null)
+                if (Server != null)
                 {
-                    return Broadcast(data);
+                    if (data != null)
+                    {
+                        return Broadcast(data, null);
+                    }
+                    else if (t != null)
+                    {
+                        return Broadcast(t.Get<byte[]>("data"), t.Get<string>("from"));
+                    }
+                    else
+                        return false;
                 }
                 else
                     return false;
@@ -298,11 +307,11 @@ namespace llcom.Pages
             {
                 byte[] buff = HexMode ? Tools.Global.Hex2Byte(toSendDataTextBox.Text) :
                     Tools.Global.GetEncoding().GetBytes(toSendDataTextBox.Text);
-                Broadcast(buff);
+                Broadcast(buff, null);
             }
         }
 
-        private bool Broadcast(byte[] buff)
+        private bool Broadcast(byte[] buff, string from)
         {
             try
             {
@@ -311,11 +320,29 @@ namespace llcom.Pages
                     foreach (var c in Clients)
                         try
                         {
-                            c.Send(buff);
+                            if (from == null)
+                            {
+                                c.Send(buff);
+                                continue;
+                            }
+                            var name = GetClientName(c);
+                            if (from == name)
+                            {
+                                c.Send(buff);
+                                ShowData($" ← send ({name})", buff, true);
+                                return true;
+                            }
                         }
                         catch { }
                 }
-                ShowData($"💥 broadcast", buff, true);
+                if (from == null)
+                {
+                    ShowData($"💥 broadcast", buff, true);
+                }
+                else
+                {
+                    ShowData($"❗ send error from not invalid");
+                }
                 return true;
             }
             catch (Exception ex)
