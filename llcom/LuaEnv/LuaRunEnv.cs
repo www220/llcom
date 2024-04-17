@@ -55,7 +55,7 @@ namespace llcom.LuaEnv
 
         private static void runTigger()
         {
-            if (!canRun)
+            if (!canRun || lua == null)
                 return;
             lock (lua)
             {

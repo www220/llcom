@@ -54,6 +54,7 @@ namespace llcom.Tools
                 .MinimumLevel.Debug()
                 .WriteTo.Console()
                 .WriteTo.File(Tools.Global.ProfilePath + "logs/log.txt",
+                    shared: true,
                     rollingInterval: RollingInterval.Day,
                     retainedFileCountLimit: 30,
                     encoding: Encoding.UTF8,
@@ -100,6 +101,7 @@ namespace llcom.Tools
                 .MinimumLevel.Debug()
                 .WriteTo.Console()
                 .WriteTo.File(Tools.Global.ProfilePath + "user_script_run/logs/log.txt",
+                    shared: true,
                     rollingInterval: RollingInterval.Day,
                     retainedFileCountLimit: 30,
                     encoding: Encoding.UTF8,
