@@ -334,10 +334,16 @@ namespace llcom.Tools
                 File.Copy(ProfilePath + "settings.json", ProfilePath + "settings.json.bakup");
             }
 
+            try{
+                //串口设置可能抛出异常
+                if (setting.comPort != "") uart.serial.PortName = setting.comPort;
+            }catch { }
             uart.serial.BaudRate = setting.baudRate;
             uart.serial.Parity = (Parity)setting.parity;
             uart.serial.DataBits = setting.dataBits;
             uart.serial.StopBits = (StopBits)setting.stopBit;
+            uart.serial.RtsEnable = setting.rts;
+            uart.serial.DtrEnable = setting.dtr;
             uart.UartDataRecived += Uart_UartDataRecived;
             uart.UartDataSent += Uart_UartDataSent;
         }

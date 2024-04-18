@@ -56,13 +56,11 @@ namespace llcom.Pages
             LockIcon.DataContext = this;
             UnLockIcon.DataContext = this;
             UnLockText.DataContext = this;
-            RTSCheckBox.DataContext = this;
-            DTRCheckBox.DataContext = this;
-            Rts = false;
-            Dtr = false;
+            RTSCheckBox.DataContext = Tools.Global.setting;
+            DTRCheckBox.DataContext = Tools.Global.setting;
             HEXBox.DataContext = Tools.Global.setting;
             HexSendCheckBox.DataContext = Tools.Global.setting;
-            this.ExtraEnterCheckBox.DataContext = Tools.Global.setting;
+            ExtraEnterCheckBox.DataContext = Tools.Global.setting;
             DisableLogCheckBox.DataContext = Tools.Global.setting;
             EnableSymbolCheckBox.DataContext = Tools.Global.setting;
 
@@ -444,29 +442,6 @@ namespace llcom.Pages
         private void LockLogButton_Click(object sender, RoutedEventArgs e)
         {
             LockLog = !LockLog;
-        }
-
-
-        public bool Rts {
-            get
-            {
-                return Tools.Global.uart.Rts;
-            }
-            set
-            {
-                Tools.Global.uart.Rts = value;
-            }
-        }
-        public bool Dtr
-        {
-            get
-            {
-                return Tools.Global.uart.Dtr;
-            }
-            set
-            {
-                Tools.Global.uart.Dtr = value;
-            }
         }
 
         private void uartDataFlowDocument_MouseLeave(object sender, MouseEventArgs e)

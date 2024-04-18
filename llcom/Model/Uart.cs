@@ -21,32 +21,6 @@ namespace llcom.Model
         public event EventHandler UartDataRecived;
         public event EventHandler UartDataSent;
         private Stream lastPortBaseStream = null;
-        private bool _rts = false;
-        private bool _dtr = false;
-
-        public bool Rts
-        {
-            get
-            {
-                return _rts;
-            }
-            set
-            {
-                Tools.Global.uart.serial.RtsEnable = _rts = value;
-            }
-        }
-        public bool Dtr
-        {
-            get
-            {
-                return _dtr;
-            }
-            set
-            {
-                Tools.Global.uart.serial.DtrEnable = _dtr = value;
-            }
-        }
-
         private static readonly object objLock = new object();
         
         /// <summary>
@@ -56,8 +30,6 @@ namespace llcom.Model
         {
             //声明接收到事件
             serial.DataReceived += Serial_DataReceived;
-            serial.RtsEnable = Rts;
-            serial.DtrEnable = Dtr;
             new Thread(ReadData).Start();
 
             //适配一下通用通道
@@ -132,8 +104,8 @@ namespace llcom.Model
             serial.Parity = (Parity)Tools.Global.setting.parity;
             serial.DataBits = Tools.Global.setting.dataBits;
             serial.StopBits = (StopBits)Tools.Global.setting.stopBit;
-            serial.RtsEnable = Rts;
-            serial.DtrEnable = Dtr;
+            serial.RtsEnable = Tools.Global.setting.rts;
+            serial.DtrEnable = Tools.Global.setting.dtr;
             Tools.Logger.AddUartLogDebug($"[refreshSerialDevice]done");
         }
 

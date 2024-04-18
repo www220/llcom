@@ -15,7 +15,10 @@ namespace llcom.Model
     {
         public event EventHandler MainWindowTop;
         private string _dataToSend = "uart data";
+        private string _comPort = "";
         private int _baudRate = 115200;
+        private bool _rts = false;
+        private bool _dtr = false;
         private bool _autoReconnect = true;
         private bool _autoSaveLog = true;
         private int _showHexFormat = 0;
@@ -164,6 +167,28 @@ namespace llcom.Model
                 Save();
             }
         }
+
+        public string comPort
+        {
+            get
+            {
+                return _comPort;
+            }
+            set
+            {
+                try
+                {
+                    Tools.Global.uart.serial.PortName = value;
+                    _comPort = value;
+                    Save();
+                }
+                catch (Exception e)
+                {
+                    Tools.MessageBox.Show(e.Message);
+                }
+            }
+        }
+
         public int baudRate
         {
             get
@@ -179,6 +204,48 @@ namespace llcom.Model
                     Save();
                 }
                 catch(Exception e)
+                {
+                    Tools.MessageBox.Show(e.Message);
+                }
+            }
+        }
+
+        public bool rts
+        {
+            get
+            {
+                return _rts;
+            }
+            set
+            {
+                try
+                {
+                    Tools.Global.uart.serial.RtsEnable = value;
+                    _rts = value;
+                    Save();
+                }
+                catch (Exception e)
+                {
+                    Tools.MessageBox.Show(e.Message);
+                }
+            }
+        }
+
+        public bool dtr
+        {
+            get
+            {
+                return _dtr;
+            }
+            set
+            {
+                try
+                {
+                    Tools.Global.uart.serial.DtrEnable = value;
+                    _dtr = value;
+                    Save();
+                }
+                catch (Exception e)
                 {
                     Tools.MessageBox.Show(e.Message);
                 }

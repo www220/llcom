@@ -53,12 +53,12 @@
                 Name="RTSCheckBox"
                 Margin="5,0,0,0"
                 Content="RTS"
-                IsChecked="{Binding Rts}" />
+                IsChecked="{Binding rts}" />
             <CheckBox
                 Name="DTRCheckBox"
                 Margin="5,0,0,0"
                 Content="DTR"
-                IsChecked="{Binding Dtr}" />
+                IsChecked="{Binding dtr}" />
             <CheckBox
                 Name="HEXBox"
                 Margin="5,0,0,0"
