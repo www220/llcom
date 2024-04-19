@@ -615,6 +615,7 @@ namespace llcom
                             forcusClosePort = false;//不再强制关闭串口
                             Tools.Logger.AddUartLogDebug($"[openPort]SetName");
                             Tools.Global.setting.comPort = port;
+                            Tools.Global.uart.serial.PortName = port;
                             Tools.Logger.AddUartLogDebug($"[openPort]open");
                             Tools.Global.uart.Open();
                             Tools.Logger.AddUartLogDebug($"[openPort]change show");
